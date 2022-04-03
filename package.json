@@ -1,0 +1,23 @@
+{
+  "name": "audio-streamer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app-start-server": "nodemon server.js",
+    "app-start-client": "http-server -o -S -C ./certs/cert.pem -K ./certs/key.pem",
+    "start": "concurrently 'npm:app-*'"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "http-server": "^14.1.0",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "ws": "^8.5.0"
+  }
+}
