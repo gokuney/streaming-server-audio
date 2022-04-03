@@ -30,18 +30,7 @@ class audioStreamer{
         // Style and intial config
         this.appTarget.innerHTML = this.stopListeningText
         this.appTarget.classList.add('audioStreamer--app')
-        this.audioEle = document.createElement('audio')
-        document.getElementsByTagName('body')[0].appendChild(this.audioEle)
-        this.audioEle.setAttribute("playsinline", "")
-        this.audioEle.setAttribute("controls", "")
-        this.audioEle.setAttribute("autoplay", "")
-
-        this.audioEle2 = document.createElement('audio')
-        document.getElementsByTagName('body')[0].appendChild(this.audioEle2)
-        this.audioEle2.setAttribute("playsinline", "")
-        this.audioEle2.setAttribute("controls", "")
-        this.audioEle2.setAttribute("autoplay", "")
-
+        
         // Bind events
         this.bindEvents()
 
@@ -91,11 +80,10 @@ class audioStreamer{
         self.recorderInstance.mimeType = 'audio/wav';
         self.recorderInstance.ondataavailable = (blob) => {
             console.log("Blob info",blob.size)
-            // let url = URL.createObjectURL(blob)
-            // this.audioEle2.src = url
             self.sendAudioChunkToCloud(blob)
         }
-        self.recorderInstance.start(3000)
+        // Delay in sending the chunks
+        self.recorderInstance.start(2000)
     }
 
     /********* Media recorder ends *********/
@@ -126,8 +114,6 @@ class audioStreamer{
         console.log("Starting to listen")
         this.isListening = true
         this.microphone = await this.getMicrophoneInstance()
-        this.audioEle.muted = true
-        this.audioEle.srcObject = this.microphone;
         this.askMediaRecorderStartRecording(this.microphone)
         this.appTarget.innerHTML = this.startListeningText
 
@@ -137,23 +123,11 @@ class audioStreamer{
 
     async stopListening(){
         let self = this
-        this.recorderInstance.stopRecording(() => {
-
-            console.log("Stopping listen")
-            self.isListening = false
-            self.appTarget.innerHTML = self.stopListeningText
-            let data =  self.recorderInstance.blob
-            console.log(data)
-            self.audioEle.src = URL.createObjectURL(data)
-            let f = new File([data], 'audio.mp3', {
-                type: 'audio/mp3'
-            })
-            invokeSaveAsDialog(f);
-            // this.socket.send(f)
-            // this.microphone.stop()
-            // this.recorderInstance.destroy()
-
-        })
+        console.log("Stopping listen")
+        self.isListening = false
+        self.appTarget.innerHTML = self.stopListeningText
+        self.recorderInstance.stop()
+        this.microphone.stop()
         
     }
 
